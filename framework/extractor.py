@@ -328,8 +328,8 @@ def run_extract(xml_file):
 
 def main():
     if len(sys.argv) < 2:
-        print("Usage: python extract.py <xml_file> [hierarchy_file] [ports_file]")
-        print("Example: python extract.py /path/to/VChipTop.xml")
+        print("Usage: python extractor.py <xml_file> [hierarchy_file] [ports_file]")
+        print("Example: python extractor.py /path/to/VChipTop.xml")
         sys.exit(1)
     
     xml_file = sys.argv[1]
