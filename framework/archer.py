@@ -131,24 +131,23 @@ def main():
     if not api_key:
         print("Warning: OPENAI_API_KEY not set. LLM features will fail.")
     
-    # Step 1: Parse Spec (Run once)
+    # Step 1
     if not step1_parse_spec():
         return
 
     for i in range(MAX_ITER):
         print(f"\n{'='*20} Iteration {i+1}/{MAX_ITER} {'='*20}")
         
-        # Step 2: Parse RTL
+        # Step 2
         if not step2_parse_rtl():
             print("Aborting due to RTL parsing failure.")
             break
             
-        # Step 3: Compare
+        # Step 3
         if not step3_compare():
             print("Aborting due to comparison failure.")
             break
             
-        # Read Diffs
         if not os.path.exists(DIFF_JSON):
             print("Diff file not found.")
             break
@@ -159,7 +158,6 @@ def main():
             
         if not diffs:
             print("No architectural differences found.")
-            # Run simulation to confirm
             print("Running simulation...")
             run_cmd("make all", redirect_output=LOG_FILE)
             if check_sim_pass():
@@ -170,10 +168,7 @@ def main():
                 break
         
         print(f"Found {len(diffs)} differences. Attempting fixes...")
-        
-        # Step 4: Fix Agent
         modified_files = []
-        
         for diff in diffs:
             file_path = diff.get('file')
             if not file_path or not os.path.exists(file_path):
@@ -182,34 +177,28 @@ def main():
                 
             print(f"Fixing file: {file_path}")
             
-            # Read original content
             with open(file_path, 'r') as f:
                 original_content = f.read()
             
-            # Get fix from LLM
             new_content = get_llm_fix(diff, original_content, api_key)
-            
             if new_content:
-                # Backup original
                 backup_path = file_path + ".bak"
                 if not os.path.exists(backup_path):
                     shutil.copy(file_path, backup_path)
                     print(f"Backed up to {backup_path}")
-                
-                # Write new content
                 with open(file_path, 'w') as f:
                     f.write(new_content)
-                
                 modified_files.append(file_path)
                 print("Applied fix.")
             else:
                 print("Failed to generate fix.")
-        
         if not modified_files:
             print("No files were modified. Stopping.")
             break
             
-        # Run Simulation
+            
+            
+            
         print("Running simulation with modified files...")
         run_cmd("make all", redirect_output=LOG_FILE)
         
