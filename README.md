@@ -1,2 +1,2 @@
 # ArchER
-ArchER (Architecture Explorer) is designed as a SoC-level verification framework targeting integration correctness in SoC designs.
+ArchER (Architecture Error Resolver) is designed as a SoC-level verification framework targeting integration correctness in SoC designs.
